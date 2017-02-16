@@ -163,7 +163,7 @@ def calcRemSquares(suMainList,suRowList,suColList,suSquareList,suCellSquare,suCe
                         if suCellOptions[p].count(j)==1:
                             suMainList[p]=j
 
-    print(suList)
+    #print(suList)
     return suMainList
 
 #calculate remaining combinations/numbers to be identified
@@ -212,43 +212,87 @@ def calcOptionsPairs(suMainList,suCellOptions):
 
     return suMainList
 
-#intialize puzzle
-suMainList = initializePuzzle()
-suCellSquare = initSuCellSquare(suMainList)
-
-print("Iteration: " + str(1) + " ----- Number of fields to solve: " + str(suMainList.count(0)))
-
-for mainrun in range(2,50):
-    #Initialize after every run
-    suRowList = initSuRows(suMainList)
-    suColList = initSuColumns(suMainList)
-    suSquareList = initSuSquares(suMainList)
-    suCellOptions = initSuCellOptions(suMainList)
-
-    #Solve puzzle
-    suMainList = calcRemOptions(suMainList, suRowList, suColList, suSquareList, suCellSquare, suCellOptions)
-
-    suMainList = calcRemSquares(suMainList, suRowList, suColList, suSquareList, suCellSquare, suCellOptions)
-
-    suMainList = calcOptionsPairs(suMainList, suCellOptions)
-
-    print("Iteration: " + str(mainrun) + " ----- Number of fields to solve: " + str(suMainList.count(0)))
-    if suMainList.count(0)==0:
-        break
+def inputPuzzle():
+    #default puzzle setting
+    puzzleStr = ""
+    puzzleList =[]
+    print("Welcome to Sudoku solver! It almost solves all type of puzzles - except those evil rated :-(")
 
 
+    custom = input("Do you want to solve your own puzzle (enter 'y') or view a demo puzzle solved (enter 'n')? input y/n: ")
+    if custom == 'y':
+        print("Enter each row of the sudoku puzzle with no space and 0 for those not identified")
+        for row in range(1,10):
+            puzzleStr += input("Enter row %d: " %row)
 
-for i in range(9):
-    if i % 3 == 0:
-        print("")
-    print(str(suMainList[i*9:i*9+3]) + " " + str(suMainList[i*9+3:i*9+6]) + " " + str(suMainList[i*9+6:i*9+9]))
-
-
-#print(Output)
-for i in range(81):
-    if suMainList[i] != 0:
-        print("Cell " + str(i) + " = " + str(suMainList[i]))
     else:
-        print("Cell " + str(i) + " = " + str(suCellOptions[i]) + "Square: " + str(suCellSquare[i]))
+        #default puzzle to solve
+        puzzleStr = "009100007006200400020070000240000080095010370030000059000080030002007900500004800"
+
+    #convert it into a list
+    for i in range(len(puzzleStr)):
+        puzzleList.append(int(puzzleStr[i]))
+    #print(puzzleList)
+
+    return puzzleList
+
+def printPuzzle(suPuzzle,message="Puzzle"):
+    #Print Puzzle
+    print("---------------------------------------------")
+    print(message)
+    for i in range(9):
+        if i % 3 == 0:
+            print("")
+        print(str(suPuzzle[i*9:i*9+3]) + " " + str(suPuzzle[i*9+3:i*9+6]) + " " + str(suPuzzle[i*9+6:i*9+9]))
+    print("---------------------------------------------")
+    print("")
+
+def main():
+
+    #intialize puzzle
+    #suMainList = initializePuzzle()
+
+    #Take puzzle input from user or initialize puzzle with default puzzle
+    suMainList = inputPuzzle()
+    suCellSquare = initSuCellSquare(suMainList)
 
 
+    printPuzzle(suMainList,"Initial Puzzle:")
+
+    print("Iteration: " + str(1) + " ----- Number of fields to solve: " + str(suMainList.count(0)))
+
+    for mainrun in range(2,50):
+        #Initialize after every run
+        suRowList = initSuRows(suMainList)
+        suColList = initSuColumns(suMainList)
+        suSquareList = initSuSquares(suMainList)
+        suCellOptions = initSuCellOptions(suMainList)
+
+        #Solve puzzle
+        suMainList = calcRemOptions(suMainList, suRowList, suColList, suSquareList, suCellSquare, suCellOptions)
+
+        suMainList = calcRemSquares(suMainList, suRowList, suColList, suSquareList, suCellSquare, suCellOptions)
+
+        suMainList = calcOptionsPairs(suMainList, suCellOptions)
+
+        print("Iteration: " + str(mainrun) + " ----- Number of fields to solve: " + str(suMainList.count(0)))
+        if suMainList.count(0)==0:
+            printPuzzle(suMainList,"Solved Puzzle:")
+            break
+
+
+
+    #print(Output) for debugging
+    if suMainList.count(0)!=0:
+        printPuzzle(suMainList,"Puzzle solver unsucessful %d fields remaining" %suMainList.count(0))
+        print("Cell options for each cell:")
+        for i in range(81):
+            if suMainList[i] != 0:
+                print("Cell " + str(i) + " = " + str(suMainList[i]))
+            else:
+                print("Cell " + str(i) + " = " + str(suCellOptions[i]) + "Square: " + str(suCellSquare[i]))
+
+
+
+if __name__ == '__main__':
+    main()

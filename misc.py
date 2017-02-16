@@ -20,5 +20,11 @@ mainSuList = [0, 0, 0, 0, 0, 0, 0, 0, 0,
               0, 0, 0, 0, 0, 0, 0, 0, 0,
               0, 0, 0, 0, 0, 0, 0, 0, 0]
 
-print(len(mainSuList))
-help(list)
+print(mainSuList)
+#help(list)
+
+puzzle = "0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0"
+
+puzzleList = puzzle.split(", ")
+print(puzzleList)
+print(int(puzzleList[0]))
